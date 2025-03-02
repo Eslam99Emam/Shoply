@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200">
+  <!-- Text "SHOPLY." in center with font similar to Inter in white color -->
+  <text x="200" y="110" 
+        font-family="Arial, Helvetica, sans-serif" 
+        font-size="48" 
+        font-weight="600"
+        text-anchor="middle"
+        letter-spacing="1"
+        fill="white">
+    SHOPLY.
+  </text>
+</svg>
