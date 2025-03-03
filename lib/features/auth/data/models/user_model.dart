@@ -1,4 +1,4 @@
-import 'package:shoply/core/utils/entities/user_entity.dart';
+import 'package:shoply/features/auth/domain/entities/user_entity.dart';
 
 class UserModel extends User {
   UserModel({

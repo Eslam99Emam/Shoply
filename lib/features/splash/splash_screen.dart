@@ -1,6 +1,6 @@
-import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,21 +17,24 @@ class _SplashScreenState extends State<SplashScreen> {
 
     Future.delayed(
       Duration(milliseconds: 1500),
+    ).whenComplete(
       () {
-        GoRouter.of(context).goNamed('onboarding');
+        GoRouter.of(context).go('/onboarding');
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSplashScreen(
-      splash: 'assets/shoply.png',
-      splashIconSize: 128,
-      animationDuration: Duration(milliseconds: 750),
+    return Scaffold(
       backgroundColor: Color(0xFF224EE1),
-      disableNavigation: true,
-      nextScreen: Container(),
+      body: Center(
+        child: SvgPicture.asset(
+          'assets/icons/shoply.svg',
+          width: 128.sp,
+          height: 128.sp,
+        ),
+      ),
     );
   }
 }
