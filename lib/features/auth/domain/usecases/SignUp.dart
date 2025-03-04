@@ -1,4 +1,4 @@
-import 'package:shoply/features/auth/domain/repositories/SignUp_Repository.dart';
+import 'package:shoply/features/auth/domain/repositories/Signup_Repository.dart';
 
 class Signup {
   SignUpRepository repo;

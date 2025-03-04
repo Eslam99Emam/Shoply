@@ -112,7 +112,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: Container(),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      GoRouter.of(context).pushReplacement('/auth'
+                          // supabase.auth.currentUser == null
+                          //     ? '/auth'
+                          //     : '/home'
+                          );
+                    },
                     child: Text(
                       "Skip",
                       style: TextStyle(color: Colors.blue.shade600),
@@ -154,10 +160,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   GestureDetector(
                     onTap: () {
                       if (_currentIndex >= animations.length - 1) {
-                        GoRouter.of(context).pushReplacement(
-                            supabase.auth.currentUser == null
-                                ? '/auth'
-                                : '/home');
+                        GoRouter.of(context).pushReplacement('/auth'
+                            // supabase.auth.currentUser == null
+                            //     ? '/auth'
+                            //     : '/home'
+                            );
                       } else {
                         pageController.nextPage(
                             duration: Durations.medium1,

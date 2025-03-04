@@ -1,26 +1,36 @@
 import 'dart:developer';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shoply/core/presentation/widgets/error_snackbar.dart';
+import 'package:shoply/core/presentation/widgets/success_bottomsheet.dart';
+import 'package:shoply/features/auth/domain/usecases/Google_Sign.dart';
+import 'package:shoply/features/auth/presentation/Providers/Controllers_Providers.dart';
+import 'package:shoply/features/auth/presentation/Providers/Google_Providers.dart';
+import 'package:shoply/features/auth/presentation/Widgets/Login_Bottomsheet.dart';
 
-class AuthScreen extends StatefulWidget {
+class AuthScreen extends ConsumerStatefulWidget {
   const AuthScreen({Key? key}) : super(key: key);
 
   @override
-  State<AuthScreen> createState() => _AuthScreenState();
+  ConsumerState<AuthScreen> createState() => _AuthScreenState();
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+class _AuthScreenState extends ConsumerState<AuthScreen> {
   @override
   Widget build(BuildContext context) {
+    final scrollController = ref.watch(bottomsheet_scrollController);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(18.0),
         child: SafeArea(
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Page title
               Text.rich(
                 TextSpan(
                   children: [
@@ -43,8 +53,29 @@ class _AuthScreenState extends State<AuthScreen> {
               SizedBox(
                 height: 40.h,
               ),
+              // Login with Google
               InkWell(
-                onTap: () {},
+                onTap: () async {
+                  final result = await ref.read(googleSignUseCaseProvider)();
+                  log(result.toString());
+                  if (result) {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) =>
+                          SuccessBottomsheet(message: "Login successful"),
+                    ).whenComplete(() {
+                      // GoRouter.of(context).go('/home');
+                    });
+                  } else {
+                    log("error");
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      ErrorSnackbar()(
+                        "Please, try again",
+                      ),
+                    );
+                  }
+                },
                 child: Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
@@ -76,6 +107,7 @@ class _AuthScreenState extends State<AuthScreen> {
               SizedBox(
                 height: 20.h,
               ),
+              // Login with Facebook
               InkWell(
                 onTap: () {},
                 child: Container(
@@ -110,6 +142,7 @@ class _AuthScreenState extends State<AuthScreen> {
               SizedBox(
                 height: 40.h,
               ),
+              // OR Divider
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -139,8 +172,31 @@ class _AuthScreenState extends State<AuthScreen> {
               SizedBox(
                 height: 40.h,
               ),
-              InkWell(
-                onTap: () {},
+              // Login with Email
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (BuildContext context) {
+                      return DraggableScrollableSheet(
+                        expand: false,
+                        snap: true,
+                        snapSizes: const [0.7, 0.8, 0.9],
+                        initialChildSize: 0.6,
+                        minChildSize: 0.6,
+                        maxChildSize: 0.9,
+                        controller: scrollController,
+                        builder: (context, scrollController) {
+                          return SingleChildScrollView(
+                            controller: scrollController,
+                            child: const LoginBottomSheet(),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
                 child: Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 21, vertical: 16),
@@ -164,6 +220,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 height: 20.h,
               ),
               Spacer(),
+              // Don't have an account
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(

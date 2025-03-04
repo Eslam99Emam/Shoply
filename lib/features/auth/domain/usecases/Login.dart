@@ -5,5 +5,7 @@ class Signin {
 
   Signin(this.repo);
 
-  Future<void> call({required String email, required String password}) async {}
+  Future<void> call({required String email, required String password}) async {
+    await repo.signIn(email: email, password: password);
+  }
 }

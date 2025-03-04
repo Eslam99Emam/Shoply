@@ -1,15 +1,20 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shoply/core/entities/user_entity.dart';
 import 'package:shoply/features/auth/presentation/Screens/auth_screen.dart';
 import 'package:shoply/features/onboarding/onboarding_screen.dart';
 import 'package:shoply/features/splash/splash_screen.dart';
 import 'package:shoply/core/theme/theme_data.dart' show lightTheme;
 import 'package:supabase_flutter/supabase_flutter.dart';
+// import 'package:hive/hive.dart';
 
-void main() {
+void main() async {
   Supabase.initialize(
     url: 'https://wtlfbojcnkwakmjqaety.supabase.co',
     anonKey:
@@ -17,7 +22,9 @@ void main() {
   );
 
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  // Hive.init(Directory.current.path);
+  // var box = await Hive.openBox<UserEntity>('user');
+  runApp(ProviderScope(child: MyApp()));
 }
 
 SupabaseClient supabase = Supabase.instance.client;
@@ -34,27 +41,42 @@ class MyApp extends StatelessWidget {
       GoRoute(
         path: '/splash',
         name: 'splash',
-        builder: (context, state) => SplashScreen(),
+        builder: (context, state) {
+          SystemChrome.setSystemUIOverlayStyle(
+            SystemUiOverlayStyle(
+              systemNavigationBarColor: lightTheme.primaryColor,
+            ),
+          );
+          return SplashScreen();
+        },
       ),
       GoRoute(
         path: '/onboarding',
         name: 'onboarding',
-        pageBuilder: (context, state) => CustomTransitionPage(
-          transitionDuration: Duration(milliseconds: 1800),
-          key: state.pageKey,
-          child: OnboardingScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, 1.0);
-            const end = Offset.zero;
-            const curve = Curves.easeInOut;
+        pageBuilder: (context, state) {
+          SystemChrome.setSystemUIOverlayStyle(
+            SystemUiOverlayStyle(
+              systemNavigationBarColor: lightTheme.scaffoldBackgroundColor,
+            ),
+          );
+          return CustomTransitionPage(
+            transitionDuration: Duration(milliseconds: 1800),
+            key: state.pageKey,
+            child: OnboardingScreen(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, 1.0);
+              const end = Offset.zero;
+              const curve = Curves.easeInOut;
 
-            var tween =
-                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-            var offsetAnimation = animation.drive(tween);
+              var tween =
+                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              var offsetAnimation = animation.drive(tween);
 
-            return SlideTransition(position: offsetAnimation, child: child);
-          },
-        ),
+              return SlideTransition(position: offsetAnimation, child: child);
+            },
+          );
+        },
       ),
       GoRoute(
         path: '/auth',

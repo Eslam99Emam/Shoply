@@ -1,6 +1,7 @@
-import 'package:shoply/features/auth/domain/entities/user_entity.dart';
+import 'package:shoply/core/entities/user_entity.dart';
+import 'package:supabase/supabase.dart';
 
-class UserModel extends User {
+class UserModel extends UserEntity {
   UserModel({
     required super.id,
     required super.name,
@@ -10,14 +11,14 @@ class UserModel extends User {
     required super.appData,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
+  factory UserModel.fromSupabaseUser(User user) {
     UserModel userModel = UserModel(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-      createdAt: json['created_at'],
-      userData: json['user_data'],
-      appData: json['app_data'],
+      id: user.id,
+      name: user.userMetadata!['name'],
+      email: user.email!,
+      createdAt: user.createdAt,
+      userData: user.userMetadata!,
+      appData: user.appMetadata,
     );
 
     return userModel;
